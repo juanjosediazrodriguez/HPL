@@ -1,0 +1,21 @@
+# === Codigo fuente de HPL (no es mio) ===
+# HPL 2.3 se descarga de netlib; el README dice como. No se versiona:
+# son 6.6 MB de codigo de terceros mas los objetos de compilacion.
+hpl-2.3/
+hpl-2.3.tar.gz
+
+# === Artefactos de compilacion ===
+*.o
+*.a
+*.so
+xhpl
+
+# === Salidas sueltas de corridas de prueba ===
+# Las corridas que SI van a la entrega estan en resultados/, versionadas a mano.
+HPL.out
+testing/HPL.dat
+
+# === Sistema ===
+Thumbs.db
+desktop.ini
+.DS_Store
