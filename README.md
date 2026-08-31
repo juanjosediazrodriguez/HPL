@@ -13,10 +13,12 @@ contra su rendimiento teórico (**RPEAK**).
 | **RMAX medido** | **106,24 GFLOPS** |
 | RPEAK (frecuencia turbo) | 352 GFLOPS |
 | RPEAK (frecuencia base) | 99,2 GFLOPS |
-| **Eficiencia** | **30,2%** |
+| **Eficiencia (RMAX ÷ RPEAK turbo)** | **30,2 %** |
 | Configuración | N = 26.880 · NB = 160 · grilla 3×4 · 12 procesos |
 | Tiempo | 121,89 s |
 | Validación | `PASSED` — residual 1,93×10⁻³ |
+
+![Salida de HPL: N=26880, NB=160, grilla 3×4, 121.89 s, 1.0624e+02 GFLOPS, residual PASSED](resultados/puntaje.png)
 
 Salida completa en [`resultados/salida_final.txt`](resultados/salida_final.txt),
 configuración en [`resultados/HPL.dat.final`](resultados/HPL.dat.final).
@@ -28,8 +30,15 @@ configuración en [`resultados/HPL.dat.final`](resultados/HPL.dat.final).
 Soporta AVX2 y FMA; **no soporta AVX-512** (Intel lo deshabilitó en esta generación
 porque los E-cores no lo implementan). 15,6 GiB de RAM, de los cuales WSL2 expone 7 GiB.
 
-**Software.** Windows 11 + WSL2 (Ubuntu) · gcc con `-O3 -march=native` ·
-OpenMPI 4.1.6 · OpenBLAS · HPL 2.3 (netlib, dic. 2018).
+**Software.**
+
+| Componente | Versión |
+|---|---|
+| Sistema | Windows 11 + WSL2 (Ubuntu 24.04) |
+| Compilador | gcc 13.3.0 (`Ubuntu 13.3.0-6ubuntu2~24.04.1`), con `-O3 -march=native` |
+| Librería matemática | OpenBLAS 0.3.26 (`0.3.26+ds-1ubuntu0.1`) |
+| MPI | OpenMPI 4.1.6 |
+| Benchmark | HPL 2.3 (netlib, 2 dic. 2018) |
 
 ## Reproducir
 
@@ -81,6 +90,27 @@ A turbo máximo:      2×16×4,4e9 + 8×8×3,3e9  = 352,0 GFLOPS
 Un nodo de servidor corre a frecuencia fija; un portátil de 15 W acelera cuando
 está frío y se frena cuando se calienta. La fórmula pide un dato que esta máquina
 no tiene.
+
+### Relación RMAX / RPEAK
+
+La eficiencia es el cociente entre lo medido y el techo teórico,
+`eficiencia = RMAX ÷ RPEAK × 100`. Con los dos denominadores posibles:
+
+| Denominador | RPEAK | RMAX ÷ RPEAK |
+|---|---|---|
+| **Frecuencia turbo** (techo absoluto) | 352,0 GFLOPS | **30,2 %** |
+| Frecuencia base | 99,2 GFLOPS | 107,1 % |
+
+```
+30,2 %  =  106,24 ÷ 352,0 × 100
+107,1 % =  106,24 ÷  99,2 × 100
+```
+
+**La cifra que se reporta es 30,2 %**, porque el RPEAK es por definición un techo
+que no se puede superar y solo el cálculo a turbo cumple esa condición. El 107 %
+no es una eficiencia válida sino la prueba de que el denominador está mal: es
+imposible medir por encima del máximo teórico, así que el procesador tuvo que
+correr por encima de su frecuencia base (ver conclusión 2).
 
 ## Experimentos
 
@@ -176,7 +206,8 @@ corridas (±4%), así que la configuración usada en la medición oficial era la
 ```
 ├── resultados/
 │   ├── HPL.dat.final       # configuración de la corrida oficial
-│   └── salida_final.txt    # salida completa de HPL
+│   ├── salida_final.txt    # salida completa de HPL
+│   └── puntaje.png         # captura del resultado en la salida
 ├── scripts/
 │   ├── 00_recon.sh         # reconocimiento de hardware y módulos (pensado para APOLO)
 │   └── 01_barrido_hibrido.sh  # barrido MPI × OpenMP del experimento 3
