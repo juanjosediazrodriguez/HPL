@@ -1,14 +1,21 @@
 # === Codigo fuente de HPL (no es mio) ===
 # HPL 2.3 se descarga de netlib; el README dice como. No se versiona:
 # son 6.6 MB de codigo de terceros mas los objetos de compilacion.
+# hpl-mkl/ es la segunda copia, enlazada contra Intel MKL en vez de OpenBLAS,
+# que arma scripts/03_compilar_con_mkl.sh.
 hpl-2.3/
+hpl-mkl/
 hpl-2.3.tar.gz
+hpl-mkl-configure.log
+hpl-mkl-build.log
 
 # === Artefactos de compilacion ===
 *.o
 *.a
 *.so
 xhpl
+resultados/dgemm/dgemm_openblas
+resultados/dgemm/dgemm_mkl
 
 # === Salidas sueltas de corridas de prueba ===
 # Las corridas que SI van a la entrega estan en resultados/, versionadas a mano.

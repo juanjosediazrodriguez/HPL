@@ -20,7 +20,12 @@
 #       RANKS=6 REPS=10 ENFRIAR=60 ./02_repetibilidad.sh
 
 set -u
-cd "$(dirname "$0")/../hpl-2.3/testing" || { echo "no encuentro hpl-2.3/testing/"; exit 1; }
+
+# Cual build medir: hpl-2.3 (OpenBLAS) o hpl-mkl (Intel MKL).
+HPL_DIR=${HPL_DIR:-hpl-2.3}
+ETIQUETA=${ETIQUETA:-$HPL_DIR}
+
+cd "$(dirname "$0")/../$HPL_DIR/testing" || { echo "no encuentro $HPL_DIR/testing/"; exit 1; }
 
 N=${N:-10000}
 NB=${NB:-160}
@@ -32,7 +37,7 @@ ENFRIAR=${ENFRIAR:-45}
 # Con dos de calentamiento la dispersion baja de 14.6% a ~4%.
 CALENTAR=${CALENTAR:-2}
 
-SALIDAS="../../resultados/repetibilidad"
+SALIDAS="../../resultados/repetibilidad/$ETIQUETA"
 mkdir -p "$SALIDAS"
 
 # Grid mas cuadrado posible con P*Q = RANKS, y P <= Q.
@@ -81,7 +86,7 @@ correr() {  # $1 = nombre del log
   awk '/^WR/ {print $NF}' "$1"
 }
 
-echo "N=$N  NB=$NB  ranks=$RANKS  grid=${P}x${Q}  reps=$REPS  enfriar=${ENFRIAR}s"
+echo "build=$HPL_DIR  N=$N  NB=$NB  ranks=$RANKS  grid=${P}x${Q}  reps=$REPS  enfriar=${ENFRIAR}s"
 echo
 
 for c in $(seq 1 "$CALENTAR"); do
